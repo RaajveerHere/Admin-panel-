@@ -144,12 +144,12 @@ html_content = '''
     <div class="box">
         <h2>FB POST COMMENTS</h2>
         <p>Post per automatic comments loader.</p>
-        <a class="btn post-btn" href="http://127.0.0.1:5005">FB POST WEB SERVER</a>
+        <a class="btn post-btn" href="https://fb-post-comment-2.onrender.com">FB POST WEB SERVER</a>
     </div>
     <div class="box">
         <h2>FB CONVO SERVER</h2>
         <p>Offline FB inbox/group messaging via token.</p>
-        <a class="btn token-btn" href="http://127.0.0.1:5004/">FB OFFLINE SERVER</a>
+        <a class="btn token-btn" href="https://fb-web-convo.onrender.com">FB OFFLINE SERVER</a>
     </div>
     <div class="box">
         <h2>INSTAGRAM AUTO SPAMMER</h2>
