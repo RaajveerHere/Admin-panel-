@@ -175,8 +175,8 @@ html_content = '''
 
 <script>
     function login() {
-        const user = document.getElementById('username').value;
-        const pass = document.getElementById('password').value;
+        const user = document.getElementById('RaajveerHere').value;
+        const pass = document.getElementById('Raaj799@@').value;
         if(user === "admin" && pass === "1234") {
             document.getElementById('loginBox').style.display = 'none';
             document.getElementById('mainContent').style.display = 'block';
