@@ -1,198 +1,36 @@
-from flask import Flask, render_template_string
+from flask import Flask, request, render_template, redirect, url_for
+import os
+import time
+import requests
 
 app = Flask(__name__)
 
-html_content = '''
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>RAAJVEER BOSS - Beautiful Panel</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* YOUR CSS HERE (same as what you gave) */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-        html, body {
-            width: 100%;
-            height: 100%;
-            background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1470&q=80') no-repeat center center / cover;
-            color: #0ff;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .login-box, .container {
-            position: relative;
-            z-index: 1;
-        }
-        .login-box {
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: inset 0 0 20px #0ff;
-        }
-        .login-box h2 {
-            font-size: 6vw;
-            color: #0ff;
-            text-shadow: 0 0 5px #0ff;
-            margin-bottom: 4vh;
-            font-weight: 700;
-        }
-        .login-box input {
-            width: 60vw;
-            padding: 2.5vw;
-            margin: 2vh 0;
-            font-size: 2.5vw;
-            background: #000;
-            color: #0ff;
-            border: 2px solid #0ff;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: inset 0 0 8px #0ff;
-        }
-        .login-btn {
-            padding: 2vw 8vw;
-            font-size: 2.5vw;
-            background-color: #0ff;
-            color: #000;
-            border: none;
-            border-radius: 100px;
-            margin-top: 3vh;
-            cursor: pointer;
-            transition: 0.3s;
-            font-weight: 600;
-        }
-        .login-btn:hover {
-            background-color: #f0f;
-            color: #fff;
-        }
-
-        .container {
-            display: none;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(0, 0, 0, 0.7);
-            overflow-y: auto;
-            padding: 5vh 5vw;
-            box-sizing: border-box;
-        }
-        .box {
-            background: rgba(0, 0, 0, 0.6);
-            margin: 4vh 0;
-            padding: 5vh 2vw;
-            border-radius: 20px;
-            border: 1px solid #0ff;
-            box-shadow: 0 0 10px #0ff;
-            text-align: center;
-        }
-        .box h2 {
-            font-size: 4vw;
-            color: #0ff;
-            margin-bottom: 1.5vh;
-            text-shadow: 0 0 4px #0ff;
-            font-weight: 700;
-        }
-        .box p {
-            font-size: 2vw;
-            color: #aaa;
-            margin-bottom: 3vh;
-            font-weight: 400;
-        }
-        .btn {
-            padding: 2vh 5vw;
-            font-size: 2vw;
-            border-radius: 50px;
-            text-decoration: none;
-            display: inline-block;
-            font-weight: 600;
-            border: none;
-            transition: 0.3s;
-        }
-        .btn:hover {
-            transform: scale(1.05);
-        }
-        .post-btn { background-color: #0ff; color: #000; }
-        .token-btn { background-color: #f0f; color: #fff; }
-        .combo-btn { background-color: #1877f2; color: #fff; }
-        .whatsapp-btn { background-color: #25d366; color: #fff; }
-        .telegram-btn { background-color: #0088cc; color: #fff; }
-        .instagram-btn {
-            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-            color: #fff;
-        }
-    </style>
-</head>
-<body>
-
-<div class="login-box" id="loginBox">
-    <h2>RAAJVEER BOSS PANEL</h2>
-    <input type="text" id="username" placeholder="Type Username...">
-    <input type="password" id="password" placeholder="Type Password...">
-    <button class="login-btn" onclick="login()">LOGIN</button>
-</div>
-
-<div class="container" id="mainContent">
-    <div class="box">
-        <h2>FB POST COMMENTS</h2>
-        <p>Post per automatic comments loader.</p>
-        <a class="btn post-btn" href="https://fb-post-comment-2.onrender.com">FB POST WEB SERVER</a>
-    </div>
-    <div class="box">
-        <h2>FB CONVO SERVER</h2>
-        <p>Offline FB inbox/group messaging via token.</p>
-        <a class="btn token-btn" href="https://fb-web-convo.onrender.com">FB OFFLINE SERVER</a>
-    </div>
-    <div class="box">
-        <h2>INSTAGRAM AUTO SPAMMER</h2>
-        <p>Instagram DMs / Group spam loader.</p>
-        <a class="btn combo-btn" href="https://in5t4gram-off.onrender.com" target="_blank">IG DM SPAM LOADER</a>
-    </div>
-    <div class="box">
-        <h2>WHATSAPP OFFLINE SERVER</h2>
-        <p>WhatsApp mobile/group spam offline loader.</p>
-        <a class="btn whatsapp-btn" href="https://wa.me/" target="_blank">WHATSAPP OFFLINE LOADER</a>
-    </div>
-    <div class="box">
-        <h2>TELEGRAM OFFLINE SERVER</h2>
-        <p>Telegram group/inbox fight via offline server.</p>
-        <a class="btn telegram-btn" href="https://t.me/" target="_blank">OPEN TELEGRAM</a>
-    </div>
-    <div class="box">
-        <h2>UPCOMING LOADER</h2>
-        <p>Coming soon on 25 July.</p>
-        <a class="btn instagram-btn" href="https://www.instagram.com/" target="_blank">INSTAGRAM LAUNCH</a>
-    </div>
-</div>
-
-<script>
-    function login() {
-        const user = document.getElementById('RaajveerHere').value;
-        const pass = document.getElementById('Raaj799@@').value;
-        if(user === "admin" && pass === "1234") {
-            document.getElementById('loginBox').style.display = 'none';
-            document.getElementById('mainContent').style.display = 'block';
-        } else {
-            alert('Wrong Username or Password!');
-        }
-    }
-</script>
-
-</body>
-</html>
-'''
+# Static variables for headers
+headers = {
+    'Connection': 'keep-alive',
+    'Cache-Control': 'max-age=0',
+    'Upgrade-Insecure-Requests': '1',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+    'Accept-Encoding': 'gzip, deflate',
+    'Accept-Language': 'en-US,en;q=0.9,fr;q=0.8',
+}
 
 @app.route('/')
-def home():
-    return render_template_string(html_content)
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+def index():
+    return '''
+    <div id='content'>
+<!-- info --><div style="font-size: 20px">
+<script type="text/javascript">
+farbbibliothek = new Array();
+farbbibliothek[0] = new Array("#FF0000","#FF1100","#FF2200","#FF3300","#FF4400","#FF5500","#FF6600","#FF7700","#FF8800","#FF9900","#FFaa00","#FFbb00","#FFcc00","#FFdd00","#FFee00","#FFff00","#FFee00","#FFdd00","#FFcc00","#FFbb00","#FFaa00","#FF9900","#FF8800","#FF7700","#FF6600","#FF5500","#FF4400","#FF3300","#FF2200","#FF1100");
+farbbibliothek[1] = new Array("#00FF00","#000000","#00FF00","#00FF00");
+farbbibliothek[2] = new Array("#00FF00","#FF0000","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00","#00FF00");
+farbbibliothek[3] = new Array("#FF0000","#FF4000","#FF8000","#FFC000","#FFFF00","#C0FF00","#80FF00","#40FF00","#00FF00","#00FF40","#00FF80","#00FFC0","#00FFFF","#00C0FF","#0080FF","#0040FF","#0000FF","#4000FF","#8000FF","#C000FF","#FF00FF","#FF00C0","#FF0080","#FF0040");
+farbbibliothek[4] = new Array("#FF0000","#EE0000","#DD0000","#CC0000","#BB0000","#AA0000","#990000","#880000","#770000","#660000","#550000","#440000","#330000","#220000","#110000","#000000","#110000","#220000","#330000","#440000","#550000","#660000","#770000","#880000","#990000","#AA0000","#BB0000","#CC0000","#DD0000","#EE0000");
+farbbibliothek[5] = new Array("#000000","#000000","#000000","#FFFFFF","#FFFFFF","#FFFFFF");
+farbbibliothek[6] = new Array("#0000FF","#FFFF00");
+farben = farbbibliothek[4];
+function farbschrift(){for(var b=0;b<Buchstabe.length;b++){document.all["a"+b].style.color=farben[b]}farbverlauf()}function string2array(b){Buchstabe=new Array();while(farben.length<b.length){farben=farben.concat(farben)}k=0;while(k<=b.length){Buchstabe[k]=b.charAt(k);k++}}function divserzeugen(){for(var b=0;b<Buchstabe.length;b++){document.write("<span id='a"+b+"' class='a"+b+"'>"+Buchstabe[b]+"</span>")}farbschrift()}var a=1;function farbverlauf(){for(var b=0;b<farben.length;b++){farben[b-1]=farben[b]}farben[farben.length-1]=farben[-1];setTimeout("farbschrift()",30)}var farbsatz=1;function farbtauscher(){farben=farbbibliothek[farbsatz];while(farben.length<text.length){farben=farben.concat(farben)}farbsatz=Math.floor(Math.random()*(farbbibliothek.length-0.0001))}setInterval("farbtauscher()",5000);
+ 
+text= "💙💚❤️THIS WEB PAGE IS MADE BY Mr.RAAJVEER BOSS 💫💯🟥🟨🟧OWNER :- Mr.RAAJVEER BOSS ✨🍁🌹"; //h
