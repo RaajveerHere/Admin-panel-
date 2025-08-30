@@ -135,8 +135,8 @@ html_content = '''
 
 <div class="login-box" id="loginBox">
     <h2>RAAJVEER BOSS PANEL</h2>
-    <input type="text" id="username" placeholder="Type Username...">
-    <input type="password" id="password" placeholder="Type Password...">
+    <input type="text" id="username" placeholder="Type Username"RaajveerHere">
+    <input type="password" id="password" placeholder="Type Password"Raaj799@@">
     <button class="login-btn" onclick="login()">LOGIN</button>
 </div>
 
